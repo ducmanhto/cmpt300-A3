@@ -7,33 +7,44 @@
 // Global semaphore list
 Semaphore semaphores[5]; 
 
-// Initialize the semaphores
-void initializeSemaphores() {
-    for (int i = 0; i < 5; i++) {
-        semaphores[i].value = 0;
-        semaphores[i].waitQueue = List_create();
-        if (!semaphores[i].waitQueue) {
-            fprintf(stderr, "Failed to create semaphore waiting queue.\n");
-            exit(EXIT_FAILURE);
-        }
+// Initialize the semaphores (N)
+bool initializeSemaphore(int semID, int initialValue) {
+    if (semID < 0 || semID >= sizeof(semaphores) / sizeof(semaphores[0])) {
+        return false; // Invalid semaphore ID
     }
+    Semaphore* sem = &semaphores[semID];
+    if (sem->waitQueue != NULL) {
+        return false; // Semaphore already initialized
+    }
+    sem->value = initialValue;
+    sem->waitQueue = List_create();
+    return true;
 }
 
-// Wait on a semaphore
-void semaphoreWait(int semIndex, PCB* pcb) {
-    Semaphore* sem = &semaphores[semIndex];
+// Wait on a semaphore (P)
+void semaphoreWait(int semID, PCB* pcb) {
+    if (semID < 0 || semID >= sizeof(semaphores) / sizeof(semaphores[0])) {
+        printf("Invalid semaphore ID.\n");
+        return;
+    }
+
+    Semaphore* sem = &semaphores[semID];
     sem->value--;
     if (sem->value < 0) {
         // Add PCB to the wait queue
         List_append(sem->waitQueue, pcb);
-        // Change the process state to BLOCKED
-        pcb->state = BLOCKED;
+        pcb->state = BLOCKED; // Change the process state to BLOCKED
     }
 }
 
-// Signal a semaphore
-void semaphoreSignal(int semIndex) {
-    Semaphore* sem = &semaphores[semIndex];
+// Signal a semaphore (V)
+void semaphoreSignal(int semID) {
+    if (semID < 0 || semID >= sizeof(semaphores) / sizeof(semaphores[0])) {
+        printf("Invalid semaphore ID.\n");
+        return;
+    }
+
+    Semaphore* sem = &semaphores[semID];
     sem->value++;
     if (sem->value <= 0) {
         PCB* pcb = (PCB*)List_remove(sem->waitQueue);

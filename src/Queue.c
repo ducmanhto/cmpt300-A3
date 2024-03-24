@@ -11,6 +11,7 @@ List* readyQueueLow; // Priority 2
 List* sendQueue; // Processes waiting for a reply
 List* receiveQueue; // Processes waiting to receive a message
 
+// Initialize the process control system
 void initializeProcessControl() {
     // Create the ready queues for different priorities
     readyQueueHigh = List_create();
@@ -34,6 +35,7 @@ void initializeProcessControl() {
     }
 }
 
+// Function to add a process to the ready queue based on priority
 void addProcessToReadyQueue(PCB* pcb) {
     List* targetQueue;
     switch (pcb->priority) {

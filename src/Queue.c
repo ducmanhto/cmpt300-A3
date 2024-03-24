@@ -1,20 +1,8 @@
 #include "list.h"
+#include "Queue.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h> 
-
-typedef enum {
-    RUNNING,
-    READY,
-    BLOCKED
-} ProcessState;
-
-typedef struct PCB_s {
-    int processID;
-    int priority; // 0, 1, or 2
-    ProcessState state;
-    char* message; // Place to store messages sent or replied to this process.
-} PCB;
 
 // Declaration of global queues
 List* readyQueueHigh; // Priority 0

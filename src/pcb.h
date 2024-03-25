@@ -9,13 +9,14 @@ typedef enum
     BLOCKED
 } ProcessState;
 
-typedef struct PCB_s PCB;
-struct PCB
+typedef struct
 {
     int pid;           
     int priority;       
     ProcessState state; 
     char message[41];       
-};
+} PCB;
+
+PCB* PCB_create(int priority);
 
 #endif

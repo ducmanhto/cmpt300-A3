@@ -7,21 +7,23 @@
 List* highPriorityReadyQueue;
 List* normalPriorityReadyQueue;
 List* lowPriorityReadyQueue;
+List* waitingOnSendQueue;
+List* waitingOnReceiveQueue;
 
 void initializeQueues()
 {
     highPriorityReadyQueue = List_create();
     normalPriorityReadyQueue = List_create();
     lowPriorityReadyQueue = List_create();
-
-    if (!highPriorityReadyQueue || !normalPriorityReadyQueue || !lowPriorityReadyQueue)
+    waitingOnSendQueue = List_create();
+    waitingOnReceiveQueue = List_create();
+    
+    if (!highPriorityReadyQueue || !normalPriorityReadyQueue || !lowPriorityReadyQueue || !waitingOnSendQueue || !waitingOnReceiveQueue)
     {
         printf("Failed to initialize queues\n");
     }
 }
 
-
-// Function to add a process to the ready queue based on priority
 int addProcessToReadyQueue(PCB* pcb) {
     List* targetQueue;
 
@@ -40,6 +42,22 @@ int addProcessToReadyQueue(PCB* pcb) {
     }
 
     return List_append(targetQueue, pcb);
+}
+
+void Queue_print(List* queue)
+{
+    if (queue == NULL || List_count(queue) == 0) {
+        printf("Queue is empty.\n");
+        return;
+    }
+
+    PCB* pcb = List_first(queue);
+    while (pcb != NULL)
+    {
+        PCB_print(pcb);
+        pcb = List_next(queue);
+    }
+    
 }
 
 // Comparator function to match PCB by PID

@@ -11,12 +11,23 @@ typedef enum
 
 typedef struct
 {
+    int senderPID;
+    int recipientPID;
+    char body[41];
+} PROC_MSG;
+
+typedef struct
+{
     int pid;           
     int priority;       
     ProcessState state; 
-    char message[41];       
+    PROC_MSG* message;       
 } PCB;
 
+extern PCB* currentProcess;
+
 PCB* PCB_create(int priority);
+void PCB_print(PCB* process);
+void PCB_free(PCB* pcb);
 
 #endif

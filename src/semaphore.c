@@ -1,6 +1,6 @@
 #include "list.h"
-#include "Queue.h"
-#include "Sem.h"
+#include "queues.h"
+#include "semaphore.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,10 +22,10 @@ bool initializeSemaphore(int semID, int initialValue) {
 }
 
 // Wait on a semaphore (P)
-void semaphoreWait(int semID, PCB* pcb) {
+int semaphoreWait(int semID, PCB* pcb) {
     if (semID < 0 || semID >= sizeof(semaphores) / sizeof(semaphores[0])) {
         printf("Invalid semaphore ID.\n");
-        return;
+        exit(-1);
     }
 
     Semaphore* sem = &semaphores[semID];
@@ -35,13 +35,15 @@ void semaphoreWait(int semID, PCB* pcb) {
         List_append(sem->waitQueue, pcb);
         pcb->state = BLOCKED; // Change the process state to BLOCKED
     }
+    
+    return sem->value;
 }
 
 // Signal a semaphore (V)
-void semaphoreSignal(int semID) {
+int semaphoreSignal(int semID) {
     if (semID < 0 || semID >= sizeof(semaphores) / sizeof(semaphores[0])) {
         printf("Invalid semaphore ID.\n");
-        return;
+        exit(-1);
     }
 
     Semaphore* sem = &semaphores[semID];
@@ -55,4 +57,6 @@ void semaphoreSignal(int semID) {
             pcb->state = READY;
         }
     }
+
+    return sem->value;
 }

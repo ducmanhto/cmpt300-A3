@@ -6,6 +6,7 @@
 
 void initializeQueues();
 int addProcessToReadyQueue(PCB* pcb);
+void Queue_print();
 // bool matchPCBByPID(void* pcb, void* pid);
 // void removeProcessFromReadyQueue(int pid);
 
